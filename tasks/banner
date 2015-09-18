@@ -1,0 +1,23 @@
+#! /usr/bin/env node
+// -*- js -*-
+
+/*global process, require*/
+(function setUp(process, require) {
+  'use strict';
+
+  var infos = require('../package.json')
+    , today = new Date()
+    , banner = ['/*',
+        ' * ' + infos.name,
+        ' *',
+        ' * ' + infos.description,
+        ' * ' + infos.homepage,
+        ' * ' + infos.author,
+        ' * ' + infos.contributors.join(', '),
+        ' * ',
+        ' * ' + infos.license + ' license',
+        ' * ' + today.toISOString(),
+        ' */'].join('\n');
+
+  process.stdout.write(banner);
+}(process, require));

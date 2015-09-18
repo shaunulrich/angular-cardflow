@@ -1,130 +1,61 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="angular-cardflow-example">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>angular-cardflow</title>
-        <link href="demo.css" rel="stylesheet">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.11/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.11/angular-touch.min.js"></script>
-        
-        <!-- build:js cardflow.min.js -->
-        <script src="../cardflow.js"></script>
-        <!-- endbuild -->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>angular-cardflow</title>
+    <link href="../../src/css/cardflow.css" rel="stylesheet">
+    <link href="demo.css" rel="stylesheet">
 
-        <!-- build:css cardflow.min.css -->
-        <link href="cardflow.css" rel="stylesheet">
-        <!-- endbuild -->
-    </head>
+    <script src="../../bower_components/angular/angular.min.js"></script>
+    <script src="../../bower_components/angular-touch/angular-touch.min.js"></script>
+    <script src="../../src/angular/cardflow.js"></script>
+  </head>
 
-    <body ng-controller="example-controller">
+  <body ng-controller="example-controller as vm">
+    <h1>angular-cardflow</h1>
+    <p>
+      <h2>swipeSnapKinetic</h2>
+      Scroll left or right to move cards and set current
+      <span>
+        <button ng-click="vm.cardflowModel.current = 0" ng-hide="vm.cardflowModel.current === 0">&lt;&lt;</button>
+        <button ng-click="vm.cardflowModel.current = vm.cardflowModel.current - 1" ng-hide="vm.cardflowModel.current <= 0">&lt;</button>
+        {{ vm.cardflowModel.current + 1 }} / {{ vm.cardflowModel.cards.length }}
+        <button ng-click="vm.cardflowModel.current = vm.cardflowModel.current + 1" ng-hide="vm.cardflowModel.current >= (vm.cardflowModel.cards.length - 1)">&gt;</button>
+        <button ng-click="vm.cardflowModel.current = vm.cardflowModel.cards.length - 1" ng-hide="vm.cardflowModel.current === vm.cardflowModel.cards.length - 1">&gt;&gt;</button>
+      </span>
+      <cardflow ng-model="vm.cardflowModel">
+        <span class="cardflow-card image-dimension tooltip" ng-repeat="aCard in vm.cardflowModel.cards">
+          <img src="{{ aCard.image }}"></img>
+          <span>
+            {{ aCard.title }}
+          </span>
+        </span>
+      </cardflow>
+    </p>
+  </body>
 
-        <div class="container">
-            <a id="github" href="https://github.com/konsumer/angular-cardflow">view on github</a>
+  <script>
+    angular.module('angular-cardflow-example', [
+      'angular-cardflow'])
+      .controller('example-controller', function exampleController() {
 
-            <h1>angular-cardflow</h1>
+        var types = ['cats', 'fashion', 'nature', 'food', 'abstract', 'nightlife']
+          , cicleIndex = 0
+          , cards = [];
+        for (cicleIndex = 0; cicleIndex < 40; cicleIndex += 1) {
 
-            <p>Listed here are various ways you can use this project with ngRepeats.</p>
-            <p><a href="carousel.html">Here</a> is gallery/carousel example.</p>
-            <p><a href="simple.html">Here</a> is a simple example.</p>
-            <p><a href="watch.html">Here</a> is an example of using a watch.</p>
+          var aName = types[cicleIndex % types.length];
+          cards.push({
+            'image': 'http://lorempixel.com/200/200/' + aName + '/' + ((cicleIndex % 10) + 1),
+            'title': aName
+          });
+        }
 
-            
-            <h2>swipeSnapKinetic</h2>
-            <p>Scroll left or right to move cards and set current</p>
-            <button ng-click="cardflowSnapKinetic.current=cardflowSnapKinetic.current-1" ng-disabled="cardflowSnapKinetic.current <= 0">&lt;</button> {{ cardflowSnapKinetic.current+1 }} / {{ cards.length }}
-            <button ng-click="cardflowSnapKinetic.current=cardflowSnapKinetic.current+1"  ng-disabled="cardflowSnapKinetic.current >= (cards.length-1)">&gt;</button>
-            <cardflow model="cardflowSnapKinetic" mode="swipeSnapKinetic">
-                <div class="cardflow-card" ng-repeat="card in cards" style="background-image: url( {{card.image}} )">
-                    {{ card.title }}
-                </div>
-            </cardflow>
-
-            <h2>none</h2>
-            <p>Only buttons will change current card</p>
-            <button ng-click="cardflowNone.current=cardflowNone.current-1" ng-disabled="cardflowNone.current <= 0">&lt;</button> {{ cardflowNone.current+1 }} / {{ cards.length }}
-            <button ng-click="cardflowNone.current=cardflowNone.current+1"  ng-disabled="cardflowNone.current >= (cards.length-1)">&gt;</button>
-            <cardflow model="cardflowNone" mode="none">
-                <div class="cardflow-card" ng-repeat="card in cards" style="background-image: url( {{card.image}} )">
-                    {{ card.title }}
-                </div>
-            </cardflow>
-
-            <h2>none (as page)</h2>
-            <p>Only buttons will change current page</p>
-            <button ng-click="cardflowNonePage.current=cardflowNonePage.current-cardflowNonePage.pageSize" ng-disabled="cardflowNonePage.current <= 0">&lt;</button> {{ cardflowNonePage.current/cardflowNonePage.pageSize+1 }} / {{ cards.length/cardflowNonePage.pageSize }}
-            <button ng-click="cardflowNonePage.current=cardflowNonePage.current+cardflowNonePage.pageSize"  ng-disabled="cardflowNonePage.current >= (cards.length-cardflowNonePage.pageSize)">&gt;</button>
-            <cardflow model="cardflowNonePage" mode="none" class="page">
-                <div class="cardflow-card" ng-repeat="card in cards" style="background-image: url( {{card.image}} )">
-                    {{ card.title }}
-                </div>
-            </cardflow>
-
-            <h2>swipe</h2>
-            <p>Scroll left or right to move cards. No current is tracked. This is sort of like how Hulu mobile app works.</p>
-            <cardflow model="cardflowSwipe" mode="swipe" class="page">
-                <div class="cardflow-card" ng-repeat="card in cards" style="background-image: url( {{card.image}} )">
-                    {{ card.title }}
-                </div>
-            </cardflow>
-
-            <h2>swipeSnapOne</h2>
-            <p>Swipe right or left to scroll active card by 1.</p>
-            <button ng-click="cardflowSnapOne.current=cardflowSnapOne.current-1" ng-disabled="cardflowSnapOne.current <= 0">&lt;</button> {{ cardflowSnapOne.current+1 }} / {{ cards.length }}
-            <button ng-click="cardflowSnapOne.current=cardflowSnapOne.current+1"  ng-disabled="cardflowSnapOne.current >= (cards.length-1)">&gt;</button>
-            <cardflow model="cardflowSnapOne" mode="swipeSnapOne">
-                <div class="cardflow-card" ng-repeat="card in cards" style="background-image: url( {{card.image}} )">
-                    {{ card.title }}
-                </div>
-            </cardflow>
-
-            <h2>swipeSnapPage</h2>
-            <p>Like swipeSnapOne, but by the page. This is sort of like how Netflix mobile app works.</p>
-            <button ng-click="cardflowSnapPage.current=cardflowSnapPage.current-cardflowSnapPage.pageSize" ng-disabled="cardflowSnapPage.current <= 0">&lt;</button> {{ cardflowSnapPage.current/cardflowSnapPage.pageSize+1 }} / {{ cards.length/cardflowSnapPage.pageSize }}
-            <button ng-click="cardflowSnapPage.current=cardflowSnapPage.current+cardflowSnapPage.pageSize"  ng-disabled="cardflowSnapPage.current >= (cards.length-cardflowSnapPage.pageSize)">&gt;</button>
-            <cardflow model="cardflowSnapPage" mode="swipeSnapPage" class="page">
-                <div class="cardflow-card" ng-repeat="card in cards" style="background-image: url( {{card.image}} )">
-                    {{ card.title }}
-                </div>
-            </cardflow>
-
-            <h2>swipeSnap</h2>
-            <p>Scroll left or right to move cards and set current</p>
-            <button ng-click="cardflowSnap.current=cardflowSnap.current-1" ng-disabled="cardflowSnap.current <= 0">&lt;</button> {{ cardflowSnap.current+1 }} / {{ cards.length }}
-            <button ng-click="cardflowSnap.current=cardflowSnap.current+1"  ng-disabled="cardflowSnap.current >= (cards.length-1)">&gt;</button>
-            <cardflow model="cardflowSnap" mode="swipeSnap">
-                <div class="cardflow-card" ng-repeat="card in cards" style="background-image: url( {{card.image}} )">
-                    {{ card.title }}
-                </div>
-            </cardflow> 
-
-         
-        </div>
-
-    </body>
-
-    <script>
-
-    angular.module('angular-cardflow-example', ['angular-cardflow'])
-        .controller('example-controller', function($scope){
-            // generate 40 cards
-            $scope.cards =[];
-            var types = ['cats','fashion','nature','food','abstract','nightlife'];
-            for (var i=0; i<40; i++){
-                var t = types[i % types.length];
-                $scope.cards.push({image:'http://lorempixel.com/200/200/' + t + '/'+((i%10)+1), title: t});
-            }
-
-            //  models for various cardflows
-            $scope.cardflowNone = {};
-            $scope.cardflowSnapOne = {};
-            $scope.cardflowSnap = {};
-            $scope.cardflowSnapPage = {};
-            $scope.cardflowSnapKinetic = {};
-            $scope.cardflowNonePage = {};
-            $scope.cardflowSwipe = {};
-
-
-        });
-    </script>
+        // models for various cardflows
+        this.cardflowModel = {
+          'cards': cards
+        };
+      });
+  </script>
 </html>

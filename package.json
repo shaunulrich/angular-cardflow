@@ -2,30 +2,40 @@
   "name": "angular-cardflow",
   "version": "0.3.2",
   "description": "Efficient & versatile CSS3 carousel/coverflow for angular",
-  "main": "cardflow.js",
-  "directories": {
-    "example": "examples"
-  },
+  "homepage": "https://github.com/wouldgo/angular-cardflow",
   "scripts": {
-    "start": "grunt server"
+    "ng-min": "./tasks/banner | xargs -0 -I banner uglifyjs src/angular/cardflow.js --preamble banner -c -m --screw-ie8 -p relative --source-map dist/cardflow.min.js.map -o dist/cardflow.min.js",
+    "css-min": "cat $(ls -d -1 src/css/**.css) | cleancss --source-map -o dist/cardflow.min.css",
+    "min": "npm run-script css-min && npm run-script ng-min && plato -r -d report -l .jshintrc -t \"cardflow\" src/",
+    "test": "node examples/start-node.js",
+    "lint": "eslint -c .eslintrc src && jshint -c .jshintrc --reporter=unix src && jscs -c .jscsrc src",
+    "precommit": "npm run-script lint",
+    "preversion": "npm run-script lint",
+    "version": "npm run-script min && ./tasks/bower-version-bump && git add -A .",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/konsumer/angular-cardflow.git"
+    "url": "git://github.com/wouldgo/angular-cardflow.git"
   },
   "author": "David Konsumer <konsumer@jetboystudio.com>",
+  "contributors": [
+    "Dario Andrei <wouldgo84@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/konsumer/angular-cardflow/issues"
+    "url": "https://github.com/wouldgo/angular-cardflow/issues"
   },
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-gh-pages": "~0.9.0",
-    "grunt-contrib-uglify": "~0.3.2",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-cssmin": "~0.7.0",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-usemin": "~2.0.2"
+    "clean-css": "^3.4.3",
+    "csslint": "^0.10.0",
+    "eslint": "^1.4.1",
+    "hapi": "^10.0.0",
+    "husky": "^0.10.1",
+    "inert": "^3.0.1",
+    "jscs": "^2.1.1",
+    "jshint": "^2.8.0",
+    "plato": "^1.5.0",
+    "uglifyjs": "^2.4.10"
   }
 }

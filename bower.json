@@ -2,15 +2,24 @@
   "name": "angular-cardflow",
   "version": "0.3.2",
   "description": "Efficient & versatile CSS3 carousel/coverflow for angular",
-  "main": "cardflow.js",
+  "main": [
+    "dist/cardflow.min.js",
+    "dist/cardflow.min.js.map",
+    "dist/cardflow.min.css",
+    "dist/cardflow.min.css.map"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/konsumer/angular-cardflow"
+    "url": "https://github.com/wouldgo/angular-cardflow"
   },
-  "author": "David Konsumer <konsumer@jetboystudio.com>",
+  "authors": [
+    "David Konsumer <konsumer@jetboystudio.com>",
+    "Dario Andrei <wouldgo84@gmail.com>"
+  ],
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "angular-touch": "~1.2.11"
+    "angular-touch": "~1.4.5",
+    "angular": "~1.4.5"
   }
 }
