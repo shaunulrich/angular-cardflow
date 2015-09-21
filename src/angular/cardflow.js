@@ -151,7 +151,10 @@
             return containerElement.children().length;
           }
           , onCardsChanged = function onCardsChanged() {
-            var totalWidth;
+            var totalWidth
+              , computedChildrenStyle
+              , childrenWidth
+              , childrenMarginRight;
 
             childrenElements = containerElement.children();
             childrenElements.bind('click', onCardSelected);
@@ -160,7 +163,10 @@
               childrenElements &&
               childrenElements.length > 0) {
 
-              $scope.cardflowCtrl.ngModel.cardWidth = childrenElements[1].offsetLeft - childrenElements[0].offsetLeft;
+              computedChildrenStyle = $window.getComputedStyle(childrenElements[0]);
+              childrenWidth = parseInt(computedChildrenStyle.width, 10);
+              childrenMarginRight = parseInt(computedChildrenStyle.marginRight, 10);
+              $scope.cardflowCtrl.ngModel.cardWidth = childrenWidth + childrenMarginRight;
               if ($scope.cardflowCtrl.ngModel.cardWidth === 0) {
 
                 $scope.cardflowCtrl.ngModel.cardWidth = childrenElements[0].offsetWidth;
