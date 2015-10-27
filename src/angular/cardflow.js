@@ -2,7 +2,7 @@
 (function withAngular(angular) {
   'use strict';
 
-  var cardflowDirective = function cardflowDirective($window, $swipe) {
+  var cardflowDirective = function cardflowDirective($log, $window, $swipe) {
 
     var parseElementTransform = function parseElementTransform(element) {
         var computedStyle = $window.getComputedStyle(element)
@@ -104,6 +104,7 @@
           , childrenElements
           , startingSwipePoint
           , initialTrasformOffset
+          , lastTime = 0
           , onSwipeStart = function onSwipeStart(coords) {
 
             if (coords &&
@@ -115,25 +116,36 @@
           }
           , onSwipe = function onSwipe(coords) {
 
-            if (coords &&
-              coords.x) {
-              var wrapperElementWidth = parseInt($window.getComputedStyle(wrapperElement[0]).width, 10)
-                , distance = initialTrasformOffset - (startingSwipePoint - coords.x)
-                , totalWidth = $scope.cardflowCtrl.ngModel.cardWidth * childrenElements.length - wrapperElementWidth;
+            $window.requestAnimationFrame(function onSwipeAnimationFrame(currentTime) {
 
-              if (distance < 0 &&
-                (distance > -totalWidth || $scope.cardflowCtrl.ngModel.current === $scope.cardflowCtrl.ngModel.cards.length - 1)) {
+              if (currentTime - lastTime < 17 &&
+                coords &&
+                coords.x) {
 
-                $scope.$apply(function doUpdate() {
-                  var css = translateElementByPosition(containerElement[0], distance);
+                var wrapperElementWidth = wrapperElement[0].offsetWidth
+                  , distance = initialTrasformOffset - (startingSwipePoint - coords.x)
+                  , totalWidth = $scope.cardflowCtrl.ngModel.cardWidth * childrenElements.length - wrapperElementWidth;
 
-                  if (css) {
+                if (distance < 0 &&
+                  (distance > -totalWidth || $scope.cardflowCtrl.ngModel.current === $scope.cardflowCtrl.ngModel.cards.length - 1)) {
 
-                    containerElement.css(css);
-                  }
-                });
+                  $scope.$apply(function doUpdate() {
+                    var css = translateElementByPosition(containerElement[0], distance);
+
+                    if (css) {
+
+                      containerElement.css(css);
+                    }
+                  });
+                }
+                $log.debug('Animation done');
+              } else {
+
+                $log.debug('Skipped animation');
               }
-            }
+
+              lastTime = currentTime;
+            });
           }
           , onCardSelected = function onCardSelected() {
             var ngElementSelected = angular.element(this);
@@ -269,5 +281,5 @@
   };
 
   angular.module('angular-cardflow', ['ngTouch'])
-    .directive('cardflow', ['$window', '$swipe', cardflowDirective]);
+    .directive('cardflow', ['$log', '$window', '$swipe', cardflowDirective]);
 }(angular));
